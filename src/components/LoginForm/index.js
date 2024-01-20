@@ -1,11 +1,12 @@
 import {Component} from 'react'
-
 import './index.css'
 
 class LoginForm extends Component {
   state = {
     username: '',
     password: '',
+    showErrorMsg: false,
+    errorMsg: '',
   }
 
   onChangeUsername = event => {
@@ -21,10 +22,8 @@ class LoginForm extends Component {
     history.replace('/')
   }
 
-  onSubmitFailure = () => {
-    const {history} = this.props
-    history.replace('/')
-    // let msg = "*Username or Password didn't match"
+  onSubmitFailure = errorMsg => {
+    this.setState({showErrorMsg: true, errorMsg})
   }
 
   submitForm = async event => {
@@ -43,7 +42,7 @@ class LoginForm extends Component {
     if (response.ok === true) {
       this.onSubmitSuccess()
     } else {
-      this.onSubmitFailure()
+      this.onSubmitFailure(data.error_msg)
     }
   }
 
@@ -86,7 +85,7 @@ class LoginForm extends Component {
   }
 
   render() {
-    // let msg = ''
+    const {showErrorMsg, errorMsg} = this.state
     return (
       <div className="login-form-container">
         <img
@@ -111,6 +110,7 @@ class LoginForm extends Component {
           <button type="submit" className="login-button">
             Login
           </button>
+          {showErrorMsg && <p className="error-message">*{errorMsg}</p>}
         </form>
       </div>
     )
